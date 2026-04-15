@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { uploadToMinio } from "@/lib/minio";
 import { v4 as uuid } from "uuid";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   const session = await getCurrentUser();
@@ -23,16 +23,10 @@ export async function POST(req: NextRequest) {
   const ext = path.extname(file.name) || ".bin";
   const filename = `${uuid()}${ext}`;
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
-
-  await writeFile(path.join(uploadDir, filename), buffer);
-
   const isVideo = file.type.startsWith("video/");
   const mediaType = isVideo ? "video" : "image";
 
-  return NextResponse.json({
-    url: `/uploads/${filename}`,
-    mediaType,
-  });
+  const url = await uploadToMinio(buffer, filename, file.type);
+
+  return NextResponse.json({ url, mediaType });
 }

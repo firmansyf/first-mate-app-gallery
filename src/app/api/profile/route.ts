@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { uploadToMinio } from "@/lib/minio";
 import { v4 as uuid } from "uuid";
+import path from "path";
 
 export async function PUT(req: NextRequest) {
   const session = await getCurrentUser();
@@ -27,11 +27,7 @@ export async function PUT(req: NextRequest) {
     const ext = path.extname(avatar.name) || ".jpg";
     const filename = `avatar-${uuid()}${ext}`;
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, filename), buffer);
-
-    data.avatar = `/uploads/${filename}`;
+    data.avatar = await uploadToMinio(buffer, filename, avatar.type);
   }
 
   if (Object.keys(data).length === 0) {

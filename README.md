@@ -22,7 +22,7 @@ A private photo gallery and portfolio platform with an admin dashboard for track
 | Database    | SQLite via better-sqlite3               |
 | ORM         | Prisma 7                                |
 | Auth        | JWT (jsonwebtoken) + bcryptjs           |
-| File Upload | Local filesystem (`/public/uploads/`)   |
+| File Storage| MinIO (S3-compatible object storage)    |
 
 ## Getting Started
 
@@ -51,7 +51,18 @@ Create a `.env` file in the project root:
 ```env
 DATABASE_URL="file:./dev.db"
 JWT_SECRET="your-secret-key-here"
+
+# MinIO / S3 Object Storage
+MINIO_ENDPOINT="localhost"
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY="minioadmin"
+MINIO_SECRET_KEY="minioadmin"
+MINIO_BUCKET="first-mate"
+MINIO_PUBLIC_URL=""  # e.g. https://minio.yourdomain.com (leave empty for default)
 ```
+
+For **Railway** deployment, provision a MinIO service and set the variables accordingly. Set `MINIO_PUBLIC_URL` to the public-facing URL of your MinIO instance so uploaded files are accessible from the browser.
 
 ### Run the Development Server
 
@@ -90,6 +101,7 @@ src/
 │   └── page.tsx           # Gallery (public) / Feed (authenticated)
 ├── lib/
 │   ├── auth.ts            # JWT helpers
+│   ├── minio.ts           # MinIO client + upload helper
 │   └── prisma.ts          # Prisma client singleton
 └── generated/prisma/      # Auto-generated Prisma types
 
