@@ -1,7 +1,12 @@
 import { Client } from "minio";
 
+function parseEndpoint(raw: string) {
+  const stripped = raw.replace(/^https?:\/\//, "").replace(/:\d+$/, "");
+  return stripped;
+}
+
 const minioClient = new Client({
-  endPoint: process.env.MINIO_ENDPOINT!,
+  endPoint: parseEndpoint(process.env.MINIO_ENDPOINT!),
   port: Number(process.env.MINIO_PORT || 9000),
   useSSL: process.env.MINIO_USE_SSL === "true",
   accessKey: process.env.MINIO_ACCESS_KEY!,
