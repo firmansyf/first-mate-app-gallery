@@ -123,13 +123,12 @@ export default function Navbar() {
                 </div>
               </>
             ) : (
-              <Link
-                href="/login"
+              <span
                 onClick={() => setMenuOpen(false)}
                 className="block text-sm text-gray-500 hover:text-gray-700 py-1"
               >
                 Yusuf Firmansyah
-              </Link>
+              </span>
             )}
           </div>
         </div>
