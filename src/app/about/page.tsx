@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AUTHOR_NAME, AUTHOR_JOB_TITLE, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About - FirstMate",
-  description:
-    "Tentang FirstMate dan Yusuf Firmansyah — gallery online personal untuk berbagi momen.",
+  title: `About ${AUTHOR_NAME}`,
+  description: `Tentang ${AUTHOR_NAME}, seorang ${AUTHOR_JOB_TITLE}, dan cerita di balik ${SITE_NAME} — gallery online pribadinya untuk berbagi momen.`,
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: `About ${AUTHOR_NAME} | ${SITE_NAME}`,
+    description: `Tentang ${AUTHOR_NAME}, seorang ${AUTHOR_JOB_TITLE}, dan cerita di balik ${SITE_NAME}.`,
+    url: "/about",
+    type: "profile",
+  },
 };
 
 export default function AboutPage() {
